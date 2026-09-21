@@ -7,6 +7,8 @@ A reproducible Python repository that answers two management questions from `fin
 
 The repository includes a command-line analysis, a Streamlit dashboard, deterministic output files, tests, and an explicit model-governance document.
 
+**Consolidated executive report:** [Download Razije Tairi’s 14-page Growth, Risk & IPO Readiness pack](reports/consolidated/Razije_Tairi_Revolut_Growth_Audit.pdf).
+
 **Executive report:** [Download the five-page Head-of-Risk Investigation Priority Brief](reports/head-of-risk/Head_of_Risk_Investigation_Priority_Brief.pdf).
 
 ## Executive results for the supplied dataset
