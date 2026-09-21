@@ -106,7 +106,7 @@ def conversion_tab(conversion: dict):
     fig.update_layout(showlegend=False, xaxis_title="Share of 6,989 observed KYC-PASSED users (%)", yaxis_title="", height=360)
     fig.update_xaxes(range=[65, 80], ticksuffix="%", gridcolor="#dfe6ed")
     fig.update_traces(textposition="outside", hovertemplate="%{y}<br>%{x:.2f}%<extra></extra>")
-    st.plotly_chart(fig, width="stretch")
+    st.plotly_chart(fig, use_container_width=True)
 
     st.markdown(
         f"""
@@ -142,7 +142,7 @@ def overview_tab(frame: pd.DataFrame | None, overview: dict):
             color_continuous_scale=["#dce8f5", "#a31d37"],
         )
         fig.update_layout(coloraxis_showscale=False, yaxis_title="Confirmed-fraud rate (%)", xaxis_title="", height=390)
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
     with right:
         if frame is not None:
             fraud = frame.loc[frame["IS_FRAUD_BOOL"]]
@@ -151,7 +151,7 @@ def overview_tab(frame: pd.DataFrame | None, overview: dict):
             method = by_type[["TYPE", "fraud_events"]].rename(columns={"fraud_events": "Fraud events"})
         fig = px.pie(method, names="TYPE", values="Fraud events", hole=.55, color_discrete_sequence=px.colors.qualitative.Safe)
         fig.update_layout(height=390, title="Confirmed-fraud event mix")
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
 
     st.caption("Transaction amount is not treated as realised financial loss. Mixed currencies are not summed into one portfolio-loss figure.")
 
@@ -180,7 +180,7 @@ def targets_tab(ranking: pd.DataFrame, config: dict):
     ].copy()
     numeric = [column for column in display.columns if column not in {"priority_rank", "user_id", "fraud_events", "fraud_types", "fraud_merchant_countries", "severity_only_rank"}]
     display[numeric] = display[numeric].round(1)
-    st.dataframe(display, hide_index=True, width="stretch")
+    st.dataframe(display, hide_index=True, use_container_width=True)
 
     score_long = top5.melt(
         id_vars=["priority_rank", "user_id"],
@@ -191,7 +191,7 @@ def targets_tab(ranking: pd.DataFrame, config: dict):
     score_long["Target"] = score_long["priority_rank"].map(lambda value: f"#{value}")
     fig = px.bar(score_long, x="Score", y="Target", color="Component", orientation="h", barmode="stack")
     fig.update_layout(height=420, xaxis_title="Component percentile points (before weighting)", yaxis_title="", legend_title="Signal")
-    st.plotly_chart(fig, width="stretch")
+    st.plotly_chart(fig, use_container_width=True)
 
     for _, row in top5.iterrows():
         with st.expander(f"#{int(row['priority_rank'])} · {row['user_id']} · priority score {row['priority_score']:.1f}"):
@@ -213,7 +213,7 @@ def targets_tab(ranking: pd.DataFrame, config: dict):
     ].copy()
     for column in ["priority_score", "severity_score", "repeatability_score", "conviction_score", "breadth_score"]:
         challenge_display[column] = challenge_display[column].round(1)
-    st.dataframe(challenge_display, hide_index=True, width="stretch")
+    st.dataframe(challenge_display, hide_index=True, use_container_width=True)
 
     st.download_button(
         "Download Top 5 CSV",
@@ -233,7 +233,7 @@ def methodology_tab(config: dict):
     )
     fig = px.bar(weights, x="Weight", y="Signal", orientation="h", text=weights["Weight"].map(lambda value: f"{value:.0%}"), color="Signal")
     fig.update_layout(showlegend=False, height=360, xaxis_tickformat=".0%", xaxis_title="Weight", yaxis_title="")
-    st.plotly_chart(fig, width="stretch")
+    st.plotly_chart(fig, use_container_width=True)
 
     st.markdown(
         """
