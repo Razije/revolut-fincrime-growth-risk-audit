@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: revolut-fincrime-growth-risk-audit
+    runtime: python
+    plan: free
+    branch: main
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.address 0.0.0.0 --server.port $PORT --server.headless true --browser.gatherUsageStats false
+    healthCheckPath: /_stcore/health
+    envVars:
+      - key: FINCRIME_ALLOW_UPLOAD
+        value: "false"
+      - key: PYTHON_VERSION
+        value: "3.12.3"

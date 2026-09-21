@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+import json
 import os
 import sys
 from pathlib import Path
@@ -50,15 +51,30 @@ def analyse_path(path: str, config: dict):
     return frame, conversion_metrics(frame), risk_overview(frame), build_priority_ranking(frame, config)
 
 
+@st.cache_data(show_spinner=False)
+def load_published_results(summary_path: str, ranking_path: str):
+    with Path(summary_path).open(encoding="utf-8") as handle:
+        summary = json.load(handle)
+    ranking = pd.read_csv(ranking_path)
+    return None, summary["conversion"], summary["risk_overview"], ranking
+
+
 def source_selector(config: dict):
     st.sidebar.header("Dataset")
-    uploaded = st.sidebar.file_uploader("Upload CSV or ZIP", type=["csv", "zip"])
+    allow_upload = os.getenv("FINCRIME_ALLOW_UPLOAD", "true").lower() in {"1", "true", "yes"}
+    uploaded = st.sidebar.file_uploader("Upload CSV or ZIP", type=["csv", "zip"]) if allow_upload else None
     configured = os.getenv("FINCRIME_DATA", "")
     if uploaded is not None:
         return analyse_bytes(uploaded.getvalue(), uploaded.name, config)
     if configured and Path(configured).exists():
         st.sidebar.success(f"Using configured file: {Path(configured).name}")
         return analyse_path(configured, config)
+    summary_path = ROOT / "outputs" / "audit_summary.json"
+    ranking_path = ROOT / "outputs" / "fraud_priority_ranking.csv"
+    if summary_path.exists() and ranking_path.exists():
+        st.sidebar.success("Using the published challenge results")
+        st.sidebar.caption("The public deployment contains derived audit outputs only; the raw transaction file is not deployed.")
+        return load_published_results(str(summary_path), str(ranking_path))
     st.sidebar.info("Upload `fin_crime_data.csv` or its ZIP archive to begin.")
     st.stop()
 
@@ -90,7 +106,7 @@ def conversion_tab(conversion: dict):
     fig.update_layout(showlegend=False, xaxis_title="Share of 6,989 observed KYC-PASSED users (%)", yaxis_title="", height=360)
     fig.update_xaxes(range=[65, 80], ticksuffix="%", gridcolor="#dfe6ed")
     fig.update_traces(textposition="outside", hovertemplate="%{y}<br>%{x:.2f}%<extra></extra>")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     st.markdown(
         f"""
@@ -106,7 +122,7 @@ def conversion_tab(conversion: dict):
             st.write(f"- {item}")
 
 
-def overview_tab(frame: pd.DataFrame, overview: dict):
+def overview_tab(frame: pd.DataFrame | None, overview: dict):
     st.subheader("Confirmed-fraud risk overview")
     a, b, c, d = st.columns(4)
     a.metric("Confirmed-fraud events", f"{overview['confirmed_fraud_events']:,}")
@@ -126,13 +142,16 @@ def overview_tab(frame: pd.DataFrame, overview: dict):
             color_continuous_scale=["#dce8f5", "#a31d37"],
         )
         fig.update_layout(coloraxis_showscale=False, yaxis_title="Confirmed-fraud rate (%)", xaxis_title="", height=390)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
     with right:
-        fraud = frame.loc[frame["IS_FRAUD_BOOL"]]
-        method = fraud.groupby("TYPE", as_index=False).size().rename(columns={"size": "Fraud events"})
+        if frame is not None:
+            fraud = frame.loc[frame["IS_FRAUD_BOOL"]]
+            method = fraud.groupby("TYPE", as_index=False).size().rename(columns={"size": "Fraud events"})
+        else:
+            method = by_type[["TYPE", "fraud_events"]].rename(columns={"fraud_events": "Fraud events"})
         fig = px.pie(method, names="TYPE", values="Fraud events", hole=.55, color_discrete_sequence=px.colors.qualitative.Safe)
         fig.update_layout(height=390, title="Confirmed-fraud event mix")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     st.caption("Transaction amount is not treated as realised financial loss. Mixed currencies are not summed into one portfolio-loss figure.")
 
@@ -161,7 +180,7 @@ def targets_tab(ranking: pd.DataFrame, config: dict):
     ].copy()
     numeric = [column for column in display.columns if column not in {"priority_rank", "user_id", "fraud_events", "fraud_types", "fraud_merchant_countries", "severity_only_rank"}]
     display[numeric] = display[numeric].round(1)
-    st.dataframe(display, hide_index=True, use_container_width=True)
+    st.dataframe(display, hide_index=True, width="stretch")
 
     score_long = top5.melt(
         id_vars=["priority_rank", "user_id"],
@@ -172,7 +191,7 @@ def targets_tab(ranking: pd.DataFrame, config: dict):
     score_long["Target"] = score_long["priority_rank"].map(lambda value: f"#{value}")
     fig = px.bar(score_long, x="Score", y="Target", color="Component", orientation="h", barmode="stack")
     fig.update_layout(height=420, xaxis_title="Component percentile points (before weighting)", yaxis_title="", legend_title="Signal")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     for _, row in top5.iterrows():
         with st.expander(f"#{int(row['priority_rank'])} · {row['user_id']} · priority score {row['priority_score']:.1f}"):
@@ -194,7 +213,7 @@ def targets_tab(ranking: pd.DataFrame, config: dict):
     ].copy()
     for column in ["priority_score", "severity_score", "repeatability_score", "conviction_score", "breadth_score"]:
         challenge_display[column] = challenge_display[column].round(1)
-    st.dataframe(challenge_display, hide_index=True, use_container_width=True)
+    st.dataframe(challenge_display, hide_index=True, width="stretch")
 
     st.download_button(
         "Download Top 5 CSV",
@@ -214,7 +233,7 @@ def methodology_tab(config: dict):
     )
     fig = px.bar(weights, x="Weight", y="Signal", orientation="h", text=weights["Weight"].map(lambda value: f"{value:.0%}"), color="Signal")
     fig.update_layout(showlegend=False, height=360, xaxis_tickformat=".0%", xaxis_title="Weight", yaxis_title="")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     st.markdown(
         """
