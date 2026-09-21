@@ -1,0 +1,13 @@
+{
+  "task_kind": "new-document",
+  "output": "pdf",
+  "signals": ["executive-report", "senior-management"],
+  "hard_constraints": ["polished executive PDF", "exact Top 5 identifiers and metrics", "no raw customer data"],
+  "content_features": {
+    "code_blocks": 0,
+    "defined_terms": 2,
+    "portrait_images": 0,
+    "charts": 2,
+    "tables": 3
+  }
+}

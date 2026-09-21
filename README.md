@@ -7,6 +7,8 @@ A reproducible Python repository that answers two management questions from `fin
 
 The repository includes a command-line analysis, a Streamlit dashboard, deterministic output files, tests, and an explicit model-governance document.
 
+**Executive report:** [Download the five-page Head-of-Risk Investigation Priority Brief](reports/head-of-risk/Head_of_Risk_Investigation_Priority_Brief.pdf).
+
 ## Executive results for the supplied dataset
 
 | Question | Result |

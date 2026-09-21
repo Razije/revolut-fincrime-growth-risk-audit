@@ -23,3 +23,12 @@ venv/
 # Runtime artifacts
 .streamlit/secrets.toml
 *.log
+
+# PDF build and review artifacts
+reports/**/main.pdf
+reports/**/*.verify.json
+reports/**/review/
+reports/**/review-final/
+reports/**/review-release/
+reports/**/chart-review.txt
+reports/**/review-summary.txt
