@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fincrime-growth-risk-audit"
+version = "1.0.0"
+description = "Reproducible growth conversion audit and explainable fraud-priority dashboard"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{name = "Razije"}]
+dependencies = [
+  "numpy>=2.0,<3",
+  "pandas>=2.2,<4",
+  "plotly>=5.24,<7",
+  "streamlit>=1.40,<2"
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<9"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"

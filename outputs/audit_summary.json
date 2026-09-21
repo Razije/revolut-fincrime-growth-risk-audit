@@ -1,0 +1,272 @@
+{
+  "conversion": {
+    "rows": 688651,
+    "unique_users": 8021,
+    "kyc_passed_denominator": 6989,
+    "marketing": {
+      "numerator": 5463,
+      "denominator": 6989,
+      "rate_pct": 78.16568893976249,
+      "definition": "At least one CARD_PAYMENT among users observed exclusively as KYC PASSED."
+    },
+    "matured_quality": {
+      "numerator": 5263,
+      "denominator": 6989,
+      "rate_pct": 75.30404922020318,
+      "definition": "At least one CARD_PAYMENT and no confirmed fraud among the same users."
+    },
+    "sustainable_proxy": {
+      "numerator": 5014,
+      "denominator": 6989,
+      "rate_pct": 71.74130776935183,
+      "definition": "At least two CARD_PAYMENT rows and no confirmed fraud among the same users."
+    },
+    "bridge": {
+      "fraud_screen_users": 200,
+      "fraud_screen_pp": 2.8616397195593075,
+      "repeat_use_users": 249,
+      "repeat_use_pp": 3.562741450851338,
+      "total_users": 449,
+      "total_pp": 6.424381170410645
+    },
+    "limitations": [
+      "The file contains no app-install, sign-up or product-eligibility cohort.",
+      "The file contains no timestamps, so distinct-day use, velocity, recency and fixed maturation windows cannot be calculated.",
+      "The file contains no settlement, reversal, refund, chargeback or realised-loss field.",
+      "Confirmed fraud is an ex-post label and should not silently rewrite a contemporaneous conversion KPI."
+    ]
+  },
+  "risk_overview": {
+    "confirmed_fraud_events": 14543,
+    "confirmed_fraud_rate_pct": 2.111809900806069,
+    "users_with_confirmed_fraud": 299,
+    "nonpositive_amount_rows": 12023,
+    "by_type": [
+      {
+        "TYPE": "BANK_TRANSFER",
+        "transactions": 15858,
+        "fraud_events": 1230,
+        "fraud_rate_pct": 7.756337495270526
+      },
+      {
+        "TYPE": "ATM",
+        "transactions": 47324,
+        "fraud_events": 2236,
+        "fraud_rate_pct": 4.724875327529372
+      },
+      {
+        "TYPE": "TOPUP",
+        "transactions": 132561,
+        "fraud_events": 3792,
+        "fraud_rate_pct": 2.860569850861113
+      },
+      {
+        "TYPE": "CARD_PAYMENT",
+        "transactions": 436570,
+        "fraud_events": 6849,
+        "fraud_rate_pct": 1.5688205786013698
+      },
+      {
+        "TYPE": "P2P",
+        "transactions": 56338,
+        "fraud_events": 436,
+        "fraud_rate_pct": 0.7739003869501935
+      }
+    ]
+  },
+  "risk_model": {
+    "model_name": "Head-of-Risk Priority Score",
+    "version": "1.0.0",
+    "eligible_population": "Users with at least one confirmed-fraud transaction",
+    "weights": {
+      "repeatability_score": 0.3,
+      "conviction_score": 0.25,
+      "abnormality_score": 0.2,
+      "breadth_score": 0.15,
+      "severity_score": 0.1
+    },
+    "severity_top_n_events": 3,
+    "wilson_z": 1.96,
+    "top_n": 5,
+    "notes": [
+      "AMOUNT is not assumed to equal realised financial loss.",
+      "Amounts are normalised within transaction type and currency; mixed currencies are never summed into one money total.",
+      "COUNTRY, BIRTH_YEAR and other demographic attributes are excluded from scoring.",
+      "No recency or velocity factor is used because the dataset has no timestamps."
+    ]
+  },
+  "top_5": [
+    {
+      "priority_rank": 1,
+      "user_id": "dc283b17-bbe1-4ae9-a11c-0029d5ae71d9",
+      "priority_score": 99.40050167224081,
+      "fraud_events": 1029,
+      "transaction_count": 1029,
+      "fraud_rate_pct": 100.0,
+      "fraud_rate_wilson_lower_pct": 99.62805526036132,
+      "fraud_excess_z": 221.22559840091688,
+      "fraud_types": 5,
+      "fraud_type_list": "ATM, BANK_TRANSFER, CARD_PAYMENT, P2P, TOPUP",
+      "fraud_merchant_countries": 11,
+      "fraud_currencies": 2,
+      "repeatability_score": 100.0,
+      "conviction_score": 100.0,
+      "abnormality_score": 100.0,
+      "breadth_score": 96.00334448160534,
+      "severity_score": 100.0,
+      "severity_only_rank": 1,
+      "kyc_states": "PENDING",
+      "selection_rationale": "Priority rank 1: 1029 confirmed events across 5 transaction type(s) and 11 merchant country/countries. Strongest signals: repeatability (100.0/100), conservative fraud-rate conviction (100.0/100), excess fraud versus transaction mix (100.0/100). Amount severity is capped at 10% of the score."
+    },
+    {
+      "priority_rank": 2,
+      "user_id": "b8271606-4633-4d8f-8729-a2c8ebb8a49f",
+      "priority_score": 97.84364548494983,
+      "fraud_events": 340,
+      "transaction_count": 340,
+      "fraud_rate_pct": 100.0,
+      "fraud_rate_wilson_lower_pct": 98.88274135532174,
+      "fraud_excess_z": 114.3585222284232,
+      "fraud_types": 5,
+      "fraud_type_list": "ATM, BANK_TRANSFER, CARD_PAYMENT, P2P, TOPUP",
+      "fraud_merchant_countries": 3,
+      "fraud_currencies": 4,
+      "repeatability_score": 98.66220735785953,
+      "conviction_score": 98.66220735785953,
+      "abnormality_score": 98.66220735785953,
+      "breadth_score": 93.42809364548495,
+      "severity_score": 98.32775919732441,
+      "severity_only_rank": 6,
+      "kyc_states": "PASSED",
+      "selection_rationale": "Priority rank 2: 340 confirmed events across 5 transaction type(s) and 3 merchant country/countries. Strongest signals: repeatability (98.7/100), conservative fraud-rate conviction (98.7/100), excess fraud versus transaction mix (98.7/100). Amount severity is capped at 10% of the score."
+    },
+    {
+      "priority_rank": 3,
+      "user_id": "25c2ecb3-5ec7-4fa6-8fc3-bbcf3a691217",
+      "priority_score": 97.56229096989966,
+      "fraud_events": 460,
+      "transaction_count": 460,
+      "fraud_rate_pct": 100.0,
+      "fraud_rate_wilson_lower_pct": 99.17178623047178,
+      "fraud_excess_z": 134.1059975750186,
+      "fraud_types": 5,
+      "fraud_type_list": "ATM, BANK_TRANSFER, CARD_PAYMENT, P2P, TOPUP",
+      "fraud_merchant_countries": 5,
+      "fraud_currencies": 2,
+      "repeatability_score": 98.99665551839465,
+      "conviction_score": 98.99665551839465,
+      "abnormality_score": 99.33110367892976,
+      "breadth_score": 95.00836120401338,
+      "severity_score": 89.96655518394648,
+      "severity_only_rank": 31,
+      "kyc_states": "PASSED",
+      "selection_rationale": "Priority rank 3: 460 confirmed events across 5 transaction type(s) and 5 merchant country/countries. Strongest signals: excess fraud versus transaction mix (99.3/100), repeatability (99.0/100), conservative fraud-rate conviction (99.0/100). Amount severity is capped at 10% of the score."
+    },
+    {
+      "priority_rank": 4,
+      "user_id": "5c75c857-61f0-400e-ac7b-25451c57e8de",
+      "priority_score": 96.57943143812709,
+      "fraud_events": 238,
+      "transaction_count": 238,
+      "fraud_rate_pct": 100.0,
+      "fraud_rate_wilson_lower_pct": 98.41152225258185,
+      "fraud_excess_z": 97.9214737083578,
+      "fraud_types": 5,
+      "fraud_type_list": "ATM, BANK_TRANSFER, CARD_PAYMENT, P2P, TOPUP",
+      "fraud_merchant_countries": 3,
+      "fraud_currencies": 2,
+      "repeatability_score": 97.9933110367893,
+      "conviction_score": 97.9933110367893,
+      "abnormality_score": 97.65886287625418,
+      "breadth_score": 92.02341137123746,
+      "severity_score": 93.47826086956522,
+      "severity_only_rank": 20,
+      "kyc_states": "PENDING",
+      "selection_rationale": "Priority rank 4: 238 confirmed events across 5 transaction type(s) and 3 merchant country/countries. Strongest signals: repeatability (98.0/100), conservative fraud-rate conviction (98.0/100), excess fraud versus transaction mix (97.7/100). Amount severity is capped at 10% of the score."
+    },
+    {
+      "priority_rank": 5,
+      "user_id": "4ee8690a-ebf7-435b-9fe2-103e8f83edc6",
+      "priority_score": 96.01212374581941,
+      "fraud_events": 508,
+      "transaction_count": 508,
+      "fraud_rate_pct": 100.0,
+      "fraud_rate_wilson_lower_pct": 99.2494553002335,
+      "fraud_excess_z": 130.04859210376338,
+      "fraud_types": 5,
+      "fraud_type_list": "ATM, BANK_TRANSFER, CARD_PAYMENT, P2P, TOPUP",
+      "fraud_merchant_countries": 8,
+      "fraud_currencies": 2,
+      "repeatability_score": 99.33110367892976,
+      "conviction_score": 99.33110367892976,
+      "abnormality_score": 98.99665551839465,
+      "breadth_score": 95.71070234113712,
+      "severity_score": 72.24080267558529,
+      "severity_only_rank": 84,
+      "kyc_states": "PASSED",
+      "selection_rationale": "Priority rank 5: 508 confirmed events across 5 transaction type(s) and 8 merchant country/countries. Strongest signals: repeatability (99.3/100), conservative fraud-rate conviction (99.3/100), excess fraud versus transaction mix (99.0/100). Amount severity is capped at 10% of the score."
+    }
+  ],
+  "high_severity_not_selected": [
+    {
+      "priority_rank": 91,
+      "user_id": "1632f5e0-e2da-4668-b487-5cc897b963d3",
+      "priority_score": 68.05309364548495,
+      "severity_score": 99.66555183946488,
+      "severity_only_rank": 2,
+      "fraud_events": 41,
+      "repeatability_score": 69.06354515050167,
+      "conviction_score": 69.06354515050167,
+      "breadth_score": 42.14882943143812,
+      "why_not_selected": "Higher amount-severity signal alone was insufficient: composite rank 91, 41 confirmed events, repeatability 69.1, conviction 69.1, breadth 42.1."
+    },
+    {
+      "priority_rank": 54,
+      "user_id": "11fa06ae-839a-4279-b85e-191f57d0138a",
+      "priority_score": 78.55476588628763,
+      "severity_score": 99.33110367892976,
+      "severity_only_rank": 3,
+      "fraud_events": 63,
+      "repeatability_score": 80.93645484949833,
+      "conviction_score": 80.93645484949833,
+      "breadth_score": 57.70066889632107,
+      "why_not_selected": "Higher amount-severity signal alone was insufficient: composite rank 54, 63 confirmed events, repeatability 80.9, conviction 80.9, breadth 57.7."
+    },
+    {
+      "priority_rank": 22,
+      "user_id": "5151da7c-4008-43f0-9471-da9bce725db3",
+      "priority_score": 88.2621237458194,
+      "severity_score": 98.99665551839465,
+      "severity_only_rank": 4,
+      "fraud_events": 113,
+      "repeatability_score": 91.63879598662207,
+      "conviction_score": 91.63879598662207,
+      "breadth_score": 66.89799331103679,
+      "why_not_selected": "Higher amount-severity signal alone was insufficient: composite rank 22, 113 confirmed events, repeatability 91.6, conviction 91.6, breadth 66.9."
+    },
+    {
+      "priority_rank": 32,
+      "user_id": "9fa08d28-fdf0-49d5-a92c-7fb78512a8ab",
+      "priority_score": 84.1316889632107,
+      "severity_score": 98.66220735785953,
+      "severity_only_rank": 5,
+      "fraud_events": 72,
+      "repeatability_score": 83.11036789297658,
+      "conviction_score": 83.11036789297658,
+      "breadth_score": 82.44983277591973,
+      "why_not_selected": "Higher amount-severity signal alone was insufficient: composite rank 32, 72 confirmed events, repeatability 83.1, conviction 83.1, breadth 82.4."
+    },
+    {
+      "priority_rank": 13,
+      "user_id": "1ac43c83-6c00-41cb-943c-7279a79ff2aa",
+      "priority_score": 90.68478260869566,
+      "severity_score": 97.9933110367893,
+      "severity_only_rank": 7,
+      "fraud_events": 143,
+      "repeatability_score": 92.97658862876254,
+      "conviction_score": 92.97658862876254,
+      "breadth_score": 76.13712374581941,
+      "why_not_selected": "Higher amount-severity signal alone was insufficient: composite rank 13, 143 confirmed events, repeatability 93.0, conviction 93.0, breadth 76.1."
+    }
+  ]
+}

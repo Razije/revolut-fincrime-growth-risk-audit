@@ -1,0 +1,21 @@
+{
+  "model_name": "Head-of-Risk Priority Score",
+  "version": "1.0.0",
+  "eligible_population": "Users with at least one confirmed-fraud transaction",
+  "weights": {
+    "repeatability_score": 0.30,
+    "conviction_score": 0.25,
+    "abnormality_score": 0.20,
+    "breadth_score": 0.15,
+    "severity_score": 0.10
+  },
+  "severity_top_n_events": 3,
+  "wilson_z": 1.96,
+  "top_n": 5,
+  "notes": [
+    "AMOUNT is not assumed to equal realised financial loss.",
+    "Amounts are normalised within transaction type and currency; mixed currencies are never summed into one money total.",
+    "COUNTRY, BIRTH_YEAR and other demographic attributes are excluded from scoring.",
+    "No recency or velocity factor is used because the dataset has no timestamps."
+  ]
+}

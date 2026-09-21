@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Secrets and local settings
+.env
+.env.*
+!.env.example
+
+# Raw and ad-hoc data
+/data/*.csv
+/data/*.zip
+!/data/README.md
+
+# Runtime artifacts
+.streamlit/secrets.toml
+*.log
